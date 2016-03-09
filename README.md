@@ -128,11 +128,12 @@ If you're currently using Python 3.x, you will need to tell the build to use 2.7
 Building Alpaca is pretty easy.  Just run:
 
     npm install
+    npm start
 
 This will do the following for you:
 
 - pull down all of the Node module dependencies
-- run Bower to pull down client-side (browser) dependencies
+- builds alpaca
 
 To then build, you can do this:
 
@@ -149,7 +150,12 @@ The build distribution assets will be in ```build/alpaca```.
 ### Building the Web Site and Running a local Web Server
 
 Alpaca includes a web site along with documentation, samples and much more.
-To build the web site, you will first need to install Jekyll (not covered here).
+
+You will first need to install bower packages:
+
+    bower install
+
+To build the web site, you will need to install Jekyll (not covered here).
 
 Simply do this:
 

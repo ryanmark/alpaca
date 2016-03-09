@@ -643,6 +643,7 @@ gulp.task("default", function(cb) {
         "update-release-txt",
         "build-templates",
         ["build-scripts", "build-styles", "package"],
+        "dist",
         function() {
             if (cb) {
                 cb();

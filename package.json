@@ -1,7 +1,7 @@
 {
   "name": "alpaca",
   "scripts": {
-    "start": "gulp clean default && gulp dist"
+    "start": "gulp clean default"
   },
   "repository": {
     "type": "git",
