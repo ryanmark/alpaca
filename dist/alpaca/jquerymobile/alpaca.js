@@ -23425,7 +23425,7 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
                 {
                     setTimeout(function() {
                         $((self.control)[0]).spectrum(
-                          $.extend({ color: this.data }, self.options.spectrum)
+                          $.extend({ color: self.data }, self.options.spectrum)
                         );
                     }, 100);
 
