@@ -436,6 +436,7 @@ gulp.task("build-scripts", function(cb) {
 
         ).pipe(es.wait(function() {
 
+            gulp.src('build/tmp/*').pipe( clean() );
             //console.log("build-scripts completed");
             cb();
 
@@ -693,18 +694,8 @@ gulp.task("web", function(cb) {
 });
 
 gulp.task("dist", function() {
-
-    return es.concat(
-
-        gulp.src("build/alpaca/**/*")
-            .pipe(gulp.dest("dist/alpaca")),
-
-        gulp.src("lib/**/*")
-            .pipe(gulp.dest("dist/lib"))
-
-    ).pipe(es.wait(function() {
-        // all done
-    }));
+    gulp.src("build/alpaca/**/*")
+        .pipe(gulp.dest("dist/alpaca"));
 });
 
 gulp.task("bump", function(){
