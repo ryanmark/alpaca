@@ -1,9 +1,7 @@
 {
   "name": "alpaca",
   "scripts": {
-    "postinstall": "./node_modules/.bin/bower install",
-    "postupdate": "./node_modules/.bin/bower update",
-    "start": "./node_modules/.bin/gulp clean default"
+    "start": "gulp clean default"
   },
   "repository": {
     "type": "git",
@@ -17,7 +15,6 @@
     "cucumber": "~0.3.3",
     "event-stream": "*",
     "express": "3.5.1",
-    "handlebars": "4.0.5",
     "grunt": "*",
     "grunt-aws-s3": "^0.9.4",
     "grunt-cloudfront": "^0.2.0",
@@ -42,7 +39,6 @@
     "gulp-watch": "*",
     "gulp-wrap": "^0.11.0",
     "gulp-wrap-umd": "^0.2.0",
-    "jquery": "*",
     "jsdom": "*",
     "jshint": "*",
     "jshint-stylish": "*",
@@ -57,5 +53,7 @@
     "wrench": "*"
   },
   "dependencies": {
+    "jquery": "*",
+    "handlebars": "4.0.5"
   }
 }
