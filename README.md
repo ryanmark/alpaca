@@ -204,8 +204,8 @@ need to perform individual steps:
 
 ## Contributors
 
-Here is a long list of our project's Brothers in Arms.  These folks have made numerous contributions to Alpaca
-over the years:
+Here is a long list of our project's brothers and sisters in arms.  
+These folks have made numerous contributions to Alpaca over the years:
 
 + [@cloudcms](http://github.com/cloudcms)
 + [@uzquiano](http://github.com/uzquiano)
@@ -258,6 +258,9 @@ over the years:
 + [@simonemedasfedro](https://github.com/simonemedasfedro)
 + [@78Gills](https://github.com/78Gills)
 + [@PirateSteve](https://github.com/PirateSteve)
++ [@dthompsonza](https://github.com/dthompsonza)
++ [@ousou](https://github.com/ousou)
++ [@azahid](https://github.com/azahid)
 
 ...and many others via the [Alpaca Web Site](http://www.alpacajs.org) and
 [Alpaca Issues](https://github.com/gitana/alpaca/issues)!

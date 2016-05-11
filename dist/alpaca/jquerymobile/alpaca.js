@@ -3548,6 +3548,12 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
 
             this.views[viewId].templates[templateId] = template;
 
+            // if normalized views have already been computed, then wipe them down
+            // this allows them to be re-computed on the next render and allows this template to participate
+            if (Alpaca.countProperties(Alpaca.normalizedViews) > 0)
+            {
+                Alpaca.normalizedViews = {};
+            }
         },
 
         /**
@@ -9614,6 +9620,7 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
                         }
 
                         self.form = form;
+                        var me = self;
 
                         // allow any post-rendering facilities to kick in
                         self.postRender(function() {
@@ -10066,8 +10073,13 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
                 // mark that we're refreshed
                 self.refreshed = true;
 
-                if (typeof(_data) !== "undefined") {
-                    self.setValue(_data);
+                // this is apparently needed for objects and arrays
+                if (typeof(_data) !== "undefined")
+                {
+                    if (Alpaca.isObject(_data) || Alpaca.isArray(_data))
+                    {
+                        self.setValue(_data);
+                    }
                 }
 
                 // fire the "ready" event
@@ -12314,6 +12326,10 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
              */
             disable: function()
             {
+                if (this.options.readonly) {
+                    return;
+                }
+
                 this.base();
 
                 if (this.control && this.control.length > 0)
@@ -12327,6 +12343,10 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
              */
             enable: function()
             {
+                if (this.options.readonly) {
+                    return;
+                }
+
                 this.base();
 
                 if (this.control && this.control.length > 0)
@@ -13264,6 +13284,7 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
             }
 
             self.triggerUpdate();
+
             callback();
         },
 
@@ -13517,6 +13538,10 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
          */
         disable: function()
         {
+            if (this.options.readonly) {
+                return;
+            }
+
             this.base();
 
             for (var i = 0; i < this.children.length; i++)
@@ -13530,6 +13555,10 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
          */
         enable: function()
         {
+            if (this.options.readonly) {
+                return;
+            }
+
             this.base();
 
             for (var i = 0; i < this.children.length; i++)
@@ -17580,7 +17609,17 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
 
             });
         },
-        
+
+        /**
+         * Ensures that the "name" property on the control is kept in sync.
+         */
+        updateDOMElement: function()
+        {
+            this.base();
+
+            $(this.control).find("input:radio").attr("name", this.getName());
+        },
+
         /**
          * @see Alpaca.ControlField#onClick
          */
@@ -17703,7 +17742,36 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
          */
         setup: function()
         {
+            var self = this;
+
             this.base();
+
+            if (self.schema["type"] && self.schema["type"] === "array")
+            {
+                self.options.multiple = true;
+            }
+
+            // automatically turn on "hideNone" if we're in multiselect mode and have the multiselect plugin
+            if (self.options.multiple && $.fn.multiselect)
+            {
+                if (typeof(self.options.hideNone) === "undefined")
+                {
+                    self.options.hideNone = true;
+                }
+            }
+
+            // offer some backward compability here as older version of Alpaca used to incorrectly look for
+            // maxItems and minItems on the schema.items subobject.
+            // if not defined properly, we offer some automatic forward migration of these properties
+            if (this.schema.items && this.schema.items.maxItems && typeof(this.schema.maxItems) === "undefined") {
+                this.schema.maxItems = this.schema.items.maxItems;
+                delete this.schema.items.maxItems;
+            }
+            if (this.schema.items && this.schema.items.minItems && typeof(this.schema.minItems) === "undefined") {
+                this.schema.minItems = this.schema.items.minItems;
+                delete this.schema.items.minItems;
+            }
+
         },
 
         /**
@@ -17809,11 +17877,6 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
 
             this.base(model, function() {
 
-                if (self.schema["type"] && self.schema["type"] === "array")
-                {
-                    self.options.multiple = true;
-                }
-
                 callback();
 
             });
@@ -17869,10 +17932,6 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
                         {
                             settings.nonSelectedText = self.options.noneLabel;
                         }
-                    }
-                    if (self.options.hideNone)
-                    {
-                        delete settings.nonSelectedText;
                     }
 
                     $(self.getControlEl()).multiselect(settings);
@@ -17965,9 +18024,9 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
          */
         _validateMinItems: function()
         {
-            if (this.schema.items && this.schema.items.minItems)
+            if (this.schema.minItems && this.schema.minItems >= 0)
             {
-                if ($(":selected",this.control).length < this.schema.items.minItems)
+                if ($(":selected",this.control).length < this.schema.minItems)
                 {
                     return false;
                 }
@@ -17982,9 +18041,9 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
          */
         _validateMaxItems: function()
         {
-            if (this.schema.items && this.schema.items.maxItems)
+            if (this.schema.maxItems && this.schema.maxItems >= 0)
             {
-                if ($(":selected",this.control).length > this.schema.items.maxItems)
+                if ($(":selected",this.control).length > this.schema.maxItems)
                 {
                     return false;
                 }
@@ -18004,13 +18063,13 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
 
             var status = this._validateMaxItems();
             valInfo["tooManyItems"] = {
-                "message": status ? "" : Alpaca.substituteTokens(this.getMessage("tooManyItems"), [this.schema.items.maxItems]),
+                "message": status ? "" : Alpaca.substituteTokens(this.getMessage("tooManyItems"), [this.schema.maxItems]),
                 "status": status
             };
 
             status = this._validateMinItems();
             valInfo["notEnoughItems"] = {
-                "message": status ? "" : Alpaca.substituteTokens(this.getMessage("notEnoughItems"), [this.schema.items.minItems]),
+                "message": status ? "" : Alpaca.substituteTokens(this.getMessage("notEnoughItems"), [this.schema.minItems]),
                 "status": status
             };
 
@@ -18650,18 +18709,18 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
                 this.options.items = {};
             }
 
-            // legacy - uniqueItems, maxItems, minItems
-            if (this.schema.items.maxItems) {
+            // offer some backward compability here as older version of Alpaca used to incorrectly look for
+            // maxItems, minItems and uniqueItems on the schema.items subobject.
+            // if not defined properly, we offer some automatic forward migration of these properties
+            if (this.schema.items && this.schema.items.maxItems && typeof(this.schema.maxItems) === "undefined") {
                 this.schema.maxItems = this.schema.items.maxItems;
                 delete this.schema.items.maxItems;
             }
-
-            if (this.schema.items.minItems) {
+            if (this.schema.items && this.schema.items.minItems && typeof(this.schema.minItems) === "undefined") {
                 this.schema.minItems = this.schema.items.minItems;
                 delete this.schema.items.minItems;
             }
-
-            if (this.schema.items.uniqueItems) {
+            if (this.schema.items && this.schema.items.uniqueItems && typeof(this.schema.uniqueItems) === "undefined") {
                 this.schema.uniqueItems = this.schema.items.uniqueItems;
                 delete this.schema.items.uniqueItems;
             }
@@ -19118,18 +19177,7 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
                         fieldControl.path = self.path + "[" + index + "]";
                         //fieldControl.nameCalculated = true;
                         fieldControl.render(null, function() {
-
-                            // calculate the path and name
-                            self.updatePathAndName();
-
-                            // trigger update on the parent array
-                            self.triggerUpdate();
-
-                            // TODO: refresh validation state?
-                            //self.refreshValidationState();
-
-                            if (cb)
-                            {
+                            if (cb) {
                                 cb();
                             }
                         });
@@ -19469,6 +19517,18 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
         },
 
         /**
+         * @OVERRIDE
+         *
+         * Adjust the path and name ahead of refreshing the DOM.
+         */
+        updateDOMElement: function()
+        {
+            this.updatePathAndName();
+
+            this.base();
+        },
+
+        /**
          * This method gets invoked after items are dynamically added, removed or moved around in the child chain.
          * It adjusts classes on child DOM elements to make sure they're correct.
          */
@@ -19482,10 +19542,10 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
                 {
                     $.each(parent.children, function(i, v) {
 
-                        if (parent.prePath && Alpaca.startsWith(v.path,parent.prePath))
+                        if (parent.prePath && Alpaca.startsWith(v.path, parent.prePath))
                         {
                             v.prePath = v.path;
-                            v.path = v.path.replace(parent.prePath,parent.path);
+                            v.path = v.path.replace(parent.prePath, parent.path);
                         }
 
                         // re-calculate name
@@ -19495,7 +19555,7 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
                             v.name = v.name.replace(parent.preName, parent.name);
                             if (v.field)
                             {
-                                $(v.field).attr('name', v.name);
+                                $(v.field).attr("name", v.name);
                             }
                         }
 
@@ -19540,11 +19600,11 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
 
                         if (this.parent.options.rubyrails )
                         {
-                            $(v.field).attr('name', v.parent.name);
+                            $(v.field).attr("name", v.parent.name);
                         }
                         else
                         {
-                            $(v.field).attr('name', v.name);
+                            $(v.field).attr("name", v.name);
                         }
 
                     }
@@ -19792,8 +19852,16 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
                     return Alpaca.throwErrorWithCallback("Circular reference detected for schema: " + JSON.stringify(itemSchema), self.errorCallback);
                 }
 
+                var arrayValues = self.getValue();
+
                 var itemData = Alpaca.createEmptyDataInstance(itemSchema);
                 self.addItem(itemIndex + 1, itemSchema, itemOptions, itemData, function(item) {
+
+                    // this is necessary because some underlying fields require their data to be reset
+                    // in order for the display to work out properly (radio fields)
+                    arrayValues.splice(itemIndex + 1, 0, item.getValue());
+                    self.setValue(arrayValues);
+
                     if (callback) {
                         callback(item);
                     }
@@ -20901,7 +20969,9 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
                         fieldControl.path = self.path + propertyId;
                     }
                     fieldControl.render(null, function() {
-                        cb();
+                        if (cb) {
+                            cb();
+                        }
                     });
                 },
                 "postRender": function(control) {
@@ -22882,10 +22952,10 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
                         "type": "array",
                         "items": {
                             "type": "string",
-                            "maxLength": 30,
-                            "minItems": 0,
-                            "maxItems": 3
-                        }
+                            "maxLength": 30
+                        },
+                        "minItems": 0,
+                        "maxItems": 3
                     },
                     "city": {
                         "title": "City",
@@ -23459,6 +23529,111 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
 
     Alpaca.registerFieldClass("color", Alpaca.Fields.ColorField);
     Alpaca.registerDefaultSchemaFieldMapping("color", "color");
+
+})(jQuery);
+
+/**
+ * Uses: https://mjolnic.com/bootstrap-colorpicker/
+ */
+(function($) {
+
+    var Alpaca = $.alpaca;
+
+    Alpaca.Fields.ColorPickerField = Alpaca.Fields.TextField.extend(
+    /**
+     * @lends Alpaca.Fields.ColorPickerField.prototype
+     */
+    {
+        /**
+         * @see Alpaca.Fields.TextField#setup
+         */
+        setup: function()
+        {
+            var self = this;
+
+            this.simpleColorPickerAvailable = false;
+            if (!self.isDisplayOnly() && typeof($.fn.colorpicker) !== "undefined")
+            {
+                this.simpleColorPickerAvailable = true;
+            }
+
+            // default html5 input type = "color";
+            if (typeof(this.options.colorpicker) === "undefined" && !self.simpleColorPickerAvailable)
+            {
+                this.inputType = "color";
+            }
+
+            this.base();
+
+            // set up default spectrum settings
+            if (typeof(this.options.colorpicker) === "undefined")
+            {
+                this.options.colorpicker = {};
+            }
+
+            if (self.data)
+            {
+                self.options.colorpicker.color = self.data;
+            }
+        },
+
+        /**
+         * @see Alpaca.Fields.TextField#getFieldType
+         */
+        getFieldType: function() {
+            return "colorpicker";
+        },
+
+        /**
+         * @see Alpaca.Fields.TextField#getType
+         */
+        getType: function() {
+            return "string";
+        },
+
+        afterRenderControl: function(model, callback)
+        {
+            var self = this;
+
+            this.base(model, function() {
+
+                // if we can render the spectrum plugin...
+                if (self.simpleColorPickerAvailable && self.control)
+                {
+                    setTimeout(function() {
+                        $((self.control)[0]).colorpicker(self.options.colorpicker);
+                    }, 100);
+
+                    $(self.control).on('changeColor.colorpicker', function(event) {
+                        self.setValue(event.color.toHex());
+                    });
+                }
+
+                callback();
+            });
+        }
+
+        /* builder_helpers */
+        ,
+
+        /**
+         * @see Alpaca.Fields.TextField#getTitle
+         */
+        getTitle: function() {
+            return "Color Picker Field";
+        },
+
+        /**
+         * @see Alpaca.Fields.TextField#getDescription
+         */
+        getDescription: function() {
+            return "A color picker for selecting hexadecimal color values";
+        }
+
+        /* end_builder_helpers */
+    });
+
+    Alpaca.registerFieldClass("colorpicker", Alpaca.Fields.ColorPickerField);
 
 })(jQuery);
 
@@ -26849,6 +27024,150 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
 
 })(jQuery);
 
+/**
+ * Uses: https://github.com/billyaraujo/pick-a-color
+ */
+(function($) {
+
+    var Alpaca = $.alpaca;
+
+    Alpaca.Fields.PickAColorField = Alpaca.Fields.TextField.extend(
+    /**
+     * @lends Alpaca.Fields.PickAColorField.prototype
+     */
+    {
+        /**
+         * @see Alpaca.Fields.TextField#setup
+         */
+        setup: function()
+        {
+            var self = this;
+
+            this.pickAColorFieldAvailable = false;
+            if (!self.isDisplayOnly() && typeof($.fn.pickAColor) !== "undefined")
+            {
+                this.pickAColorFieldAvailable = true;
+            }
+
+            // default html5 input type = "color";
+            if (typeof(this.options.pickacolor) === "undefined" && !self.pickAColorFieldAvailable)
+            {
+                this.inputType = "color";
+            }
+
+            this.base();
+
+            // set up default spectrum settings
+            if (typeof(this.options.pickacolor) === "undefined")
+            {
+                this.options.pickacolor = {
+                    showSpectrum          : true,
+                    showSavedColors       : true,
+                    saveColorsPerElement  : false,
+                    fadeMenuToggle        : true,
+                    showAdvanced          : true,
+                    showBasicColors       : true,
+                    showHexInput          : true,
+                    allowBlank            : true,
+                    inlineDropdown        : false
+                };
+            }
+
+            // if colors not specified, use default colors
+            if (typeof(this.options.colors) === "undefined")
+            {
+                this.options.colors = {
+                    white: "#ffffff",
+                    clouds: "#ecf0f1",
+                    red: "#c0392b",
+                    orange: "#e67e22",
+                    yellow: "#f1c40f",
+                    green: "#27ae60",
+                    blue: "#2980b9",
+                    purple: "#8e44ad",
+                    dark: "#34495e",
+                    black: "#000000",
+                    brown: "#bb9977"
+                };
+            }
+
+            if (this.options.pickacolor && typeof(this.options.pickacolor.basicColors) === "undefined")
+            {
+                this.options.pickacolor.basicColors = this.options.colors;
+            }
+
+            if (typeof(this.options.pickacolor.inlineDropdown) === "undefined")
+            {
+                this.options.pickacolor.inlineDropdown = false;
+            }
+        },
+
+        /**
+         * @see Alpaca.Fields.TextField#getFieldType
+         */
+        getFieldType: function() {
+            return "pickacolor";
+        },
+
+        /**
+         * @see Alpaca.Fields.TextField#getType
+         */
+        getType: function() {
+            return "string";
+        },
+
+        afterRenderControl: function(model, callback)
+        {
+            var self = this;
+
+            this.base(model, function() {
+
+                if (self.control)
+                {
+                    // if we can render the plugin...
+                    if (self.pickAColorFieldAvailable && self.options.pickacolor)
+                    {
+                        if (self.data) {
+                            $(self.control).attr("value", self.data);
+                        }
+
+                        $(self.control).addClass("pick-a-color");
+                        $(self.control).pickAColor(self.options.pickacolor);
+
+                        $(self.control).on("change", function(e) {
+                            self.setValue($(this).val());
+                        });
+                    }
+                }
+
+                callback();
+            });
+        }
+
+        /* builder_helpers */
+        ,
+
+        /**
+         * @see Alpaca.Fields.TextField#getTitle
+         */
+        getTitle: function() {
+            return "Pick-A-Color Field";
+        },
+
+        /**
+         * @see Alpaca.Fields.TextField#getDescription
+         */
+        getDescription: function() {
+            return "A color picker for selecting hexadecimal color values";
+        }
+
+        /* end_builder_helpers */
+    });
+
+    Alpaca.registerFieldClass("pickacolor", Alpaca.Fields.PickAColorField);
+
+})(jQuery);
+
 (function($) {
 
     var Alpaca = $.alpaca;
@@ -27170,6 +27489,123 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
 
     var Alpaca = $.alpaca;
 
+    Alpaca.Fields.SummernoteField = Alpaca.Fields.TextAreaField.extend(
+    /**
+     * @lends Alpaca.Fields.SummernoteField.prototype
+     */
+    {
+        /**
+         * @see Alpaca.Fields.TextAreaField#getFieldType
+         */
+        getFieldType: function() {
+            return "summernote";
+        },
+
+        /**
+         * @see Alpaca.Fields.TextAreaField#setup
+         */
+        setup: function()
+        {
+            if (!this.data)
+            {
+                this.data = "";
+            }
+
+            this.base();
+
+            if (typeof(this.options.summernote) == "undefined")
+            {
+                this.options.summernote = {
+                    height: null,
+                    minHeight: null,
+                    maxHeight: null,
+                    focus: true
+                };
+            }
+        },
+
+        afterRenderControl: function(model, callback)
+        {
+            var self = this;
+
+            this.base(model, function() {
+
+                // see if we can render Summernote Editor
+                if (!self.isDisplayOnly() && self.control && $.fn.summernote)
+                {
+                    // wait for Alpaca to declare the DOM swapped and ready before we attempt to do anything with CKEditor
+                    self.on("ready", function() {
+                        $(self.control).summernote(self.options.summernote);
+                    });
+                }
+
+                // if summernote's dom element gets destroyed, make sure we clean up the editor instance
+                $(self.control).bind('destroyed', function() {
+                    $(self.control).summernote('destroy');
+                });
+
+                callback();
+            });
+        }
+
+        /* builder_helpers */
+
+        /**
+         * @see Alpaca.Fields.TextAreaField#getTitle
+         */
+        ,
+        getTitle: function() {
+            return "Summernote Editor";
+        },
+
+        /**
+         * @see Alpaca.Fields.TextAreaField#getDescription
+         */
+        getDescription: function() {
+            return "Provides an instance of a Summernote Editor control for use in editing HTML.";
+        },
+
+        /**
+         * @private
+         * @see Alpaca.ControlField#getSchemaOfOptions
+         */
+        getSchemaOfOptions: function() {
+            return Alpaca.merge(this.base(), {
+                "properties": {
+                    "summernote": {
+                        "title": "Summernote Editor options",
+                        "description": "Use this entry to provide configuration options to the underlying Summernote plugin.",
+                        "type": "any"
+                    }
+                }
+            });
+        },
+
+        /**
+         * @private
+         * @see Alpaca.ControlField#getOptionsForOptions
+         */
+        getOptionsForOptions: function() {
+            return Alpaca.merge(this.base(), {
+                "fields": {
+                    "summernote": {
+                        "type": "any"
+                    }
+                }
+            });
+        }
+
+        /* end_builder_helpers */
+    });
+
+    Alpaca.registerFieldClass("summernote", Alpaca.Fields.SummernoteField);
+
+})(jQuery);
+
+(function($) {
+
+    var Alpaca = $.alpaca;
+
     /**
      * The table field is used for data representations that consist of an array with objects inside of it.  The objects
      * must have a uniform structure.  The table field renders a standard HTML table using the table.  The individual
@@ -27264,11 +27700,42 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
             {
                 $.fn.DataTable.ext.order["alpaca"] = function (settings, col) {
 
+                    // ensure that data property has latest value
+                    self.data = self.getValue();
+
+                    var propertyName = null;
+
+                    // find the property by index
+                    var c = 0;
+                    for (var k in self.schema.items.properties) {
+                        if (c === col) {
+                            propertyName = k;
+                            break;
+                        }
+                        c++;
+                    }
+
+                    // collect values
+                    var values = [];
+                    if (self.data)
+                    {
+                        for (var i = 0; i < self.data.length; i++)
+                        {
+                            values.push(self.data[i][propertyName]);
+                        }
+                    }
+
+                    // sort values
+                    values.sort();
+
+                    return values;
+
+                    /*
                     return this.api().column( col, {order:'index'} ).nodes().map( function ( td, i ) {
                         var alpacaId = $(td).children().attr("data-alpaca-field-id");
                         return Alpaca.fieldInstances[alpacaId].getValue();
                     } );
-
+                    */
                 };
 
                 // this is a kind of hacky function at the moment, trying to do filtering that takes into account
@@ -27413,10 +27880,12 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
                         // mix in fields from the items
                         for (var k in self.schema.items.properties)
                         {
-                            self.options.datatables.columns.push({
+                            var colConfig = {
                                 "orderable": true,
                                 "orderDataType": "alpaca"
-                            });
+                            };
+
+                            self.options.datatables.columns.push(colConfig);
                         }
 
                         // if we have an actions column enabled, then turn off sorting for the actions column (assumed to be last)
@@ -27667,12 +28136,19 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
             {
                 // refresh
                 self.refresh(function() {
-
                     callback();
                 });
             }
             else
             {
+                // inform data tables that we've added a row
+                // we do this by finding the TR and then adding that way
+                if (self._dt)
+                {
+                    var tr = self.field.find("[data-alpaca-field-path='" + item.path + "']");
+                    self._dt.row.add(tr);//.draw(false);
+                }
+
                 callback();
             }
         },
@@ -27694,11 +28170,15 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
                 self.refresh(function () {
                     callback();
                 });
-
-                callback();
             }
             else
             {
+                // inform data tables that we've removed a row
+                if (self._dt)
+                {
+                    self._dt.rows(childIndex).remove();//.draw(false);
+                }
+
                 callback();
             }
         },
@@ -28347,9 +28827,9 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
                 if (!self.isDisplayOnly() && self.control && typeof($.fn.tokenfield) !== "undefined")
                 {
                     // wait for Alpaca to declare the DOM swapped and ready before we attempt to do anything
-                    self.on("ready", function() {
-                        $(self.control).tokenfield(self.options.tokenfield);
-                    });
+                    self.on("ready", function(self, tokenfield) {
+                        $(self.control).tokenfield(tokenfield);
+                    }(self, self.options.tokenfield));
                 }
 
                 callback();
@@ -28421,16 +28901,16 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
 
     var Alpaca = $.alpaca;
 
-    Alpaca.Fields.UploadField = Alpaca.Fields.TextField.extend(
+    Alpaca.Fields.UploadField = Alpaca.ControlField.extend(
     /**
      * @lends Alpaca.Fields.UploadField.prototype
      */
     {
         /**
          * @constructs
-         * @augments Alpaca.Fields.TextField
+         * @augments Alpaca.Fields.ControlField
          *
-         * @class File control with nice custom styles.
+         * @class File upload control that can be mounted on top of "object" or "array" types.
          *
          * @param {Object} container Field container.
          * @param {Any} data Field data.
@@ -28444,6 +28924,14 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
             var self = this;
 
             this.base(container, data, options, schema, view, connector);
+
+            this.isArrayType = function() {
+                return self.schema.type === "array";
+            };
+
+            this.isObjectType = function() {
+                return self.schema.type === "object";
+            };
 
             // wraps an existing template descriptor into a method that looks like fn(model)
             // this is compatible with the requirements of fileinput
@@ -28504,6 +28992,18 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
 
                             self.onFileDelete.call(self, row, button, file);
 
+                            // remove from files
+                            if (self.isArrayType())
+                            {
+                                var array = self.getValueAsArray();
+                                array.splice(fileIndex, 1);
+                                self.setValueAsArray(array);
+                            }
+                            else if (self.isObjectType())
+                            {
+                                self.setValueAsArray([]);
+                            }
+
                             self.triggerWithPropagation("change");
                             setTimeout(function() {
                                 self.refreshUIState();
@@ -28549,11 +29049,6 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
                 });
             }
 
-            if (typeof(self.options.multiple) === "undefined")
-            {
-                self.options.multiple = false;
-            }
-
             if (typeof(self.options.showUploadPreview) === "undefined")
             {
                 self.options.showUploadPreview = true;
@@ -28569,42 +29064,56 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
                 self.data = [];
             }
 
+            // convert to array if not array already
+            if (self.data && Alpaca.isObject(self.data)) {
+                self.data = [self.data];
+            }
+
             // upload
             if (!self.options.upload)
             {
                 self.options.upload = {};
             }
 
-            // max number of files
+            // support copying back the maxNumberOfFiles from the upload plugin's settings
             if (typeof(self.options.maxNumberOfFiles) === "undefined")
             {
-                if (self.options.upload.maxNumberOfFiles)
+                if (typeof(self.options.upload.maxNumberOfFiles) !== "undefined")
                 {
                     self.options.maxNumberOfFiles = self.options.upload.maxNumberOfFiles;
-                    if (self.options.maxNumberOfFiles === 1)
-                    {
-                        self.options.multiple = false;
-                    }
-                    else if (self.options.maxNumberOfFiles > 1)
-                    {
-                        self.options.multiple = true;
-                    }
                 }
-                else
-                {
-                    self.options.maxNumberOfFiles = 1;
-                    if (typeof(self.options.multiple) === "boolean" && self.options.multiple)
-                    {
-                        self.options.maxNumberOfFiles = -1;
-                    }
-                }
+            }
 
-                // copy setting into upload
-                if (self.options.maxNumberOfFiles)
+            // figure out reasonable maxNumberOfFiles
+            if (typeof(self.options.maxNumberOfFiles) === "undefined")
+            {
+                self.options.maxNumberOfFiles = 1;
+                if (self.isArrayType())
                 {
-                    self.options.upload.maxNumberOfFiles = self.options.maxNumberOfFiles;
+                    self.options.maxNumberOfFiles = -1;
                 }
+            }
 
+            // safe guard
+            if (self.isObjectType()) {
+                self.options.maxNumberOfFiles = 1;
+            }
+
+            if (self.options.multiple === false)
+            {
+                self.options.maxNumberOfFiles = 1;
+            }
+
+            if (self.options.maxNumberOfFiles > 1 || self.options.maxNumberOfFiles === -1)
+            {
+                self.options.multiple = true;
+            }
+
+            // copy setting into upload plugin config
+            self.options.upload.maxNumberOfFiles = 9999;
+            if (self.options.maxNumberOfFiles > 0)
+            {
+                self.options.upload.maxNumberOfFiles = self.options.maxNumberOfFiles;
             }
 
             // max file size
@@ -28672,7 +29181,6 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
 
                 self.options.upload.headers[Alpaca.CSRF_HEADER_NAME] = csrfToken;
             }
-
         },
 
         determineCsrfToken: function()
@@ -28717,10 +29225,20 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
                 model.dropZoneMessage = self.options.dropZoneMessage;
                 if (!model.dropZoneMessage)
                 {
-                    model.dropZoneMessage = self.getMessage("dropZoneSingle");
-                    if (model.maxNumberOfFiles === 1)
+                    model.dropZoneMessage = self.getMessage("dropZoneMultiple");
+                    if (model.options.maxNumberOfFiles === 1)
                     {
-                        model.dropZoneMessage = self.getMessage("dropZoneMultiple");
+                        model.dropZoneMessage = self.getMessage("dropZoneSingle");
+                    }
+                }
+
+                model.selectFromExistingMessage = self.options.selectFromExistingMessage;
+                if (!model.selectFromExistingMessage)
+                {
+                    model.selectFromExistingMessage = self.getMessage("selectFromExistingMultiple");
+                    if (model.options.maxNumberOfFiles === 1)
+                    {
+                        model.selectFromExistingMessage = self.getMessage("selectFromExistingSingle");
                     }
                 }
 
@@ -28797,7 +29315,12 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
             if (self.options.multiple)
             {
                 $(el).find(".alpaca-fileupload-input").attr("multiple", true);
-                $(el).find(".alpaca-fileupload-input").attr("name", self.name + "_files[]");
+                //$(el).find(".alpaca-fileupload-input").attr("name", self.name + "_files[]");
+            }
+
+            if (self.options.name)
+            {
+                $(el).find(".alpaca-fileupload-input").attr("name", self.options.name);
             }
 
             // hide the progress bar at first
@@ -28841,7 +29364,7 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
                 {
                     var bad = false;
 
-                    if (i < data.originalFiles.length)
+                    if (i < data.files.length)
                     {
                         // file types
                         if (self.options.fileTypes)
@@ -28852,9 +29375,9 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
                                 re = new RegExp(self.options.fileTypes);
                             }
 
-                            if (!re.test(data.originalFiles[i]["type"]))
+                            if (!re.test(data.files[i]["type"]))
                             {
-                                uploadErrors.push('Not an accepted file type: ' + data.originalFiles[i]["type"]);
+                                uploadErrors.push('Not an accepted file type: ' + data.files[i]["type"]);
                                 bad = true;
                             }
                         }
@@ -28862,8 +29385,8 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
                         // size
                         if (self.options.maxFileSize > -1)
                         {
-                            if (data.originalFiles[i].size > self.options.maxFileSize) {
-                                uploadErrors.push('Filesize is too big: ' + data.originalFiles[i].size);
+                            if (data.files[i].size > self.options.maxFileSize) {
+                                uploadErrors.push('Filesize is too big: ' + data.files[i].size);
                                 bad = true;
                             }
                         }
@@ -28871,8 +29394,6 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
 
                     if (bad)
                     {
-                        //data.originalFiles.splice(i, 1);
-                        //data.files.splice(i, 1);
                         i++;
                     }
                     else
@@ -28880,7 +29401,7 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
                         i++;
                     }
                 }
-                while (i < data.originalFiles.length);
+                while (i < data.files.length);
 
                 if (uploadErrors.length > 0)
                 {
@@ -28917,6 +29438,7 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
                 data.files = data.result.files;
 
                 setTimeout(function() {
+                    self.refreshValidationState(true);
                     self.refreshUIState();
                 }, 250);
 
@@ -28977,13 +29499,13 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
             fileUpload.bind("fileuploaddone", function(e, data) {
 
                 // existing
-                var array = self.getValue();
+                var array = self.getValueAsArray();
 
                 var f = function(i)
                 {
                     if (i === data.files.length) // jshint ignore:line
                     {
-                        self.setValue(array);
+                        self.setValueAsArray(array);
                         return;
                     }
 
@@ -29097,28 +29619,6 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
         },
 
         /**
-         * Removes a descriptor with the given id from the value set.
-         *
-         * @param id
-         */
-        removeValue: function(id)
-        {
-            var self = this;
-
-            var array = self.getValue();
-            for (var i = 0; i < array.length; i++)
-            {
-                if (array[i].id == id) // jshint ignore:line
-                {
-                    array.splice(i, 1);
-                    break;
-                }
-            }
-
-            self.setValue(array);
-        },
-
-        /**
          * Extension point for adding properties and callbacks to the file upload config.
          *
          * @param fileUploadconfig
@@ -29227,7 +29727,7 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
          *    }]
          *
          * @param fileUploadConfig
-         * @param row
+         * @param data
          */
         enhanceFiles: function(fileUploadConfig, data)
         {
@@ -29247,15 +29747,14 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
             var files = [];
 
             // now preload with files based on property value
-            var descriptors = self.getValue();
+            var descriptors = self.getValueAsArray();
 
             var f = function(i)
             {
                 if (i == descriptors.length) // jshint ignore:line
                 {
                     // all done
-                    callback(files);
-                    return;
+                    return callback(files);
                 }
 
                 self.convertDescriptorToFile(descriptors[i], function(err, file) {
@@ -29287,31 +29786,85 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
         },
 
         /**
-         * @override
+         * Hands back the value as either an object or array, depending on the schema type.
          *
-         * Sets an array of descriptors.
-         *
-         * @param data
+         * @returns {*}
          */
-        setValue: function(val)
+        getValue: function()
         {
-            if (!val)
+            var value = this.data;
+
+            if (this.isObjectType())
             {
-                val = [];
+                if (this.data && this.data.length > 0)
+                {
+                    value = this.data[0];
+                }
             }
 
-            this.data = val;
+            return value;
+        },
+
+        setValue: function(value)
+        {
+            if (!value)
+            {
+                this.data = [];
+            }
+            else
+            {
+                if (Alpaca.isArray(value))
+                {
+                    this.data = value;
+                }
+                else if (Alpaca.isObject(value))
+                {
+                    this.data = [value];
+                }
+            }
 
             this.updateObservable();
 
             this.triggerUpdate();
         },
 
+        /**
+         * @returns {Array} the value as an array
+         */
+        getValueAsArray: function()
+        {
+            return this.data;
+        },
+
+        /**
+         * Sets the value as an array.
+         *
+         * @param array
+         */
+        setValueAsArray: function(array)
+        {
+            var self = this;
+
+            if (self.isArrayType())
+            {
+                self.setValue(array);
+            }
+            else if (self.isObjectType())
+            {
+                var val = null;
+                if (array && array.length > 0) {
+                    val = array[0];
+                }
+
+                self.setValue(val);
+            }
+        },
+
         reload: function(callback)
         {
             var self = this;
 
-            var descriptors = this.getValue();
+            var descriptors = this.getValueAsArray();
 
             var files = [];
 
@@ -29331,9 +29884,7 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
                     // refresh validation state
                     self.refreshValidationState();
 
-                    callback();
-
-                    return;
+                    return callback();
                 }
 
                 self.convertDescriptorToFile(descriptors[i], function(err, file) {
@@ -29363,13 +29914,20 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
             {
                 var maxNumberOfFiles = self.options.maxNumberOfFiles;
 
-                if (fileUpload.options.getNumberOfFiles && fileUpload.options.getNumberOfFiles() >= maxNumberOfFiles)
+                if (maxNumberOfFiles === -1)
                 {
-                    self.refreshButtons(false);
+                    self.refreshButtons(true);
                 }
                 else
                 {
-                    self.refreshButtons(true);
+                    if (fileUpload.options.getNumberOfFiles && fileUpload.options.getNumberOfFiles() >= maxNumberOfFiles)
+                    {
+                        self.refreshButtons(false);
+                    }
+                    else
+                    {
+                        self.refreshButtons(true);
+                    }
                 }
             }
         },
@@ -29422,14 +29980,14 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
         {
             var self = this;
 
+            if (self.options.errorHandler)
+            {
+                self.options.errorHandler.call(self, data);
+            }
+
             for (var i = 0; i < data.files.length; i++)
             {
                 data.files[i].error = data.errorThrown;
-            }
-
-            if (self.options.uploadFailHandler)
-            {
-                self.options.uploadFailHandler.call(self, data);
             }
         },
 
@@ -29519,11 +30077,6 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
                     },
                     "errorHandler": {
                         "title": "Error Handler",
-                        "description": "Optional function handler to be called when there is an error uploading one or more files.  This handler is typically used to instantiate a modal or other UI element to inform the end user.",
-                        "type": "function"
-                    },
-                    "uploadFailHandler": {
-                        "title": "Upload Fail Handler",
                         "description": "Optional function handler to be called when one or more files fails to upload.  This function is responsible for parsing the underlying xHR request and populating the error message state.",
                         "type": "function"
                     }
@@ -29537,12 +30090,11 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
     Alpaca.registerFieldClass("upload", Alpaca.Fields.UploadField);
 
     Alpaca.registerMessages({
-        "chooseFile": "Choose file...",
-        "chooseFiles": "Choose files...",
+        "chooseFile": "Choose File...",
+        "chooseFiles": "Choose Files...",
         "dropZoneSingle": "Click the Choose button or Drag and Drop a file here to upload...",
         "dropZoneMultiple": "Click the Choose button or Drag and Drop files here to upload..."
     });
-
 
     // https://github.com/private-face/jquery.bind-first/blob/master/dev/jquery.bind-first.js
     // jquery.bind-first.js
@@ -30489,6 +31041,55 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
 
 (function($) {
 
+	// finnish - finland
+
+	var Alpaca = $.alpaca;
+
+	Alpaca.registerView ({
+		"id": "base",
+		"messages": {
+            "fi_FI": {
+                required: "Kenttä on pakollinen",
+                invalid: "Syöte on virheellinen",
+                months: ["Tammikuu", "Helmikuu", "Maaliskuu", "Huhtikuu", "Toukokuu", "Kesäkuu", "Heinäkuu", "Elokuu", "Syyskuu", "Lokakuu", "Marraskuu", "Joulukuu"],
+                timeUnits: {
+                    SECOND: "sekuntia",
+                    MINUTE: "minuuttia",
+                    HOUR: "tuntia",
+                    DAY: "päivää",
+                    MONTH: "kuukautta",
+                    YEAR: "vuotta"
+                },
+                "notOptional": "Tämä kenttä on pakollinen",
+                "disallowValue": "Seuraavat syötteet eivät ole sallittuja: {0}",
+                "invalidValueOfEnum": "Kentän pitää sisältää yksi seuraavista arvoista: {0}. [{1}]",
+                "notEnoughItems": "Pienin sallittu määrä arvoja on {0}",
+                "tooManyItems": "Suurin sallittu määrä arvoja on {0}",
+                "valueNotUnique": "Syötetyt arvot eivät ole uniikkeja",
+                "notAnArray": "Syöte ei ole lista",
+                "invalidDate": "Virheellinen päivämäärämuoto: {0}",
+                "invalidEmail": "Virheellinen sähköpostiosoite",
+                "stringNotAnInteger": "Arvo ei ole kokonaisluku",
+                "invalidIPv4": "Virheellinen IPv4-osoite",
+                "stringValueTooSmall": "Pienin sallittu arvo on {0}",
+                "stringValueTooLarge": "Suurin sallittu arvo on {0}",
+                "stringValueTooSmallExclusive": "Arvon pitää olla suurempi kuin {0}",
+                "stringValueTooLargeExclusive": "Arvon pitää olla pienempi kuin {0}",
+                "stringDivisibleBy": "Luvun pitää olla jaollinen luvulla {0}",
+                "stringNotANumber": "Syöte ei ole luku",
+                "invalidPassword": "Virheellinen salasana",
+                "invalidPhone": "Virheellinen puhelinnumero",
+                "invalidPattern": "Syötteen täytyy olla seuraavassa muodossa: {0}",
+                "stringTooShort": "Syötteen minimipituus on {0} merkkiä",
+                "stringTooLong": "Syötteen maksimipituus on {0} merkkiä"
+            }
+		}
+	});
+
+})(jQuery);
+
+(function($) {
+
 	// french - france
 
 	var Alpaca = $.alpaca;
@@ -30844,6 +31445,55 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
             }
         }
     });
+
+})(jQuery);
+
+(function($) {
+
+	// swedish - sweden
+
+	var Alpaca = $.alpaca;
+
+	Alpaca.registerView ({
+		"id": "base",
+		"messages": {
+            "sv_SE": {
+                required: "Fältet är obligatoriskt",
+                invalid: "Värdet är felaktigt",
+                months: ["Januari", "Februari", "Mars", "April", "Maj", "Juni", "Juli", "Augusti", "September", "Oktober", "November", "December"],
+                timeUnits: {
+                    SECOND: "sekunder",
+                    MINUTE: "minuter",
+                    HOUR: "timmar",
+                    DAY: "dagar",
+                    MONTH: "månader",
+                    YEAR: "år"
+                },
+                "notOptional": "Detta fält är obligatoriskt",
+                "disallowValue": "Dessa värden är inte tillåtna: {0}",
+                "invalidValueOfEnum": "Fältet måste innehålla ett av följande värden: {0}. [{1}]",
+                "notEnoughItems": "Det minsta tillåtna antalet element är {0}",
+                "tooManyItems": "Det största tillåtna antalet element är {0}",
+                "valueNotUnique": "Värdena är inte unika",
+                "notAnArray": "Inte en lista av värden",
+                "invalidDate": "Felaktigt format för datum: {0}",
+                "invalidEmail": "Ogiltig e-postadress",
+                "stringNotAnInteger": "Värdet är inte ett heltal",
+                "invalidIPv4": "Ogiltig IPv4-adress",
+                "stringValueTooSmall": "Det minsta tillåtna värdet är {0}",
+                "stringValueTooLarge": "Det största tillåtna värdet är {0}",
+                "stringValueTooSmallExclusive": "Värdet måste vara större än {0}",
+                "stringValueTooLargeExclusive": "Värdet måste vara mindre än {0}",
+                "stringDivisibleBy": "Talet måste vara delbart med {0}",
+                "stringNotANumber": "Värdet är inte ett tal",
+                "invalidPassword": "Ogiltigt lösenord",
+                "invalidPhone": "Ogiltigt telefonnummer",
+                "invalidPattern": "Fältet måste vara i följande format: {0}",
+                "stringTooShort": "Detta fält måste innehålla minst {0} tecken",
+                "stringTooLong": "Detta fält får innehålla högst {0} tecken"
+            }
+		}
+	});
 
 })(jQuery);
 

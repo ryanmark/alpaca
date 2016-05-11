@@ -77,6 +77,7 @@ var paths = {
             "src/js/fields/advanced/AddressField.js",
             "src/js/fields/advanced/CKEditorField.js",
             "src/js/fields/advanced/ColorField.js",
+            "src/js/fields/advanced/ColorPickerField.js",
             "src/js/fields/advanced/CountryField.js",
             "src/js/fields/advanced/CurrencyField.js",
             "src/js/fields/advanced/DateField.js",
@@ -95,8 +96,10 @@ var paths = {
             "src/js/fields/advanced/PasswordField.js",
             "src/js/fields/advanced/PersonalNameField.js",
             "src/js/fields/advanced/PhoneField.js",
+            "src/js/fields/advanced/PickAColorField.js",
             "src/js/fields/advanced/SearchField.js",
             "src/js/fields/advanced/StateField.js",
+            "src/js/fields/advanced/SummernoteField.js",
             "src/js/fields/advanced/TableField.js",
             "src/js/fields/advanced/TableRowField.js",
             "src/js/fields/advanced/TagField.js",
@@ -116,6 +119,7 @@ var paths = {
             "src/js/messages/i18n/de_AT.js",
             "src/js/messages/i18n/de_DE.js",
             "src/js/messages/i18n/es_ES.js",
+            "src/js/messages/i18n/fi_FI.js",
             "src/js/messages/i18n/fr_FR.js",
             "src/js/messages/i18n/hr_HR.js",
             "src/js/messages/i18n/it_IT.js",
@@ -123,6 +127,7 @@ var paths = {
             "src/js/messages/i18n/nl_BE.js",
             "src/js/messages/i18n/pl_PL.js",
             "src/js/messages/i18n/pt_BR.js",
+            "src/js/messages/i18n/sv_SE.js",
             "src/js/messages/i18n/zh_CN.js"
         ],
         all_views: [
@@ -1027,4 +1032,10 @@ gulp.task("update-release-txt", function() {
         .pipe(rename("license.txt"))
         .pipe(gulp.dest("."));
 
+});
+
+gulp.task("full", function(cb) {
+    runSequence("default", "site", "server", function () {
+        cb();
+    });
 });
