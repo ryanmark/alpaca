@@ -6,8 +6,6 @@
         <label class="{{#if options.labelClass}}{{options.labelClass}}{{/if}} control-label alpaca-control-label" for="{{id}}">{{{options.label}}}</label>
         {{/if}}
 
-        {{#control}}{{/control}}
-
         {{#if options.helpers}}
         {{#each options.helpers}}
         <p class="help-block {{#if options.helperClass}}{{options.helperClass}}{{/if}}">
@@ -16,6 +14,8 @@
         </p>
         {{/each}}
         {{/if}}
+
+        {{#control}}{{/control}}
 
     </div>
 
