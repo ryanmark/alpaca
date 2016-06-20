@@ -546,23 +546,23 @@ this["HandlebarsPrecompiled"]["web-edit"]["container-array-toolbar"] = Handlebar
     + "\n    </div>\n\n</script>";
 },"useData":true,"useDepths":true});
 this["HandlebarsPrecompiled"]["web-edit"]["container-array"] = Handlebars.template({"1":function(container,depth0,helpers,partials,data) {
-    return "";
-},"3":function(container,depth0,helpers,partials,data) {
     var stack1, helper, options, buffer = 
   "\n            ";
-  stack1 = ((helper = (helper = helpers.item || (depth0 != null ? depth0.item : depth0)) != null ? helper : helpers.helperMissing),(options={"name":"item","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data}),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},options) : helper));
+  stack1 = ((helper = (helper = helpers.item || (depth0 != null ? depth0.item : depth0)) != null ? helper : helpers.helperMissing),(options={"name":"item","hash":{},"fn":container.program(2, data, 0),"inverse":container.noop,"data":data}),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},options) : helper));
   if (!helpers.item) { stack1 = helpers.blockHelperMissing.call(depth0,stack1,options)}
   if (stack1 != null) { buffer += stack1; }
   return buffer + "\n\n";
+},"2":function(container,depth0,helpers,partials,data) {
+    return "";
 },"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var stack1, helper, options, alias1=depth0 != null ? depth0 : {}, buffer = 
-  "<script type=\"text/x-handlebars-template\">\n\n    <div>\n\n        ";
-  stack1 = ((helper = (helper = helpers.arrayToolbar || (depth0 != null ? depth0.arrayToolbar : depth0)) != null ? helper : helpers.helperMissing),(options={"name":"arrayToolbar","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data}),(typeof helper === "function" ? helper.call(alias1,options) : helper));
+  "<script type=\"text/x-handlebars-template\">\n\n    <div>\n\n"
+    + ((stack1 = helpers.each.call(alias1,(depth0 != null ? depth0.items : depth0),{"name":"each","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + "\n        ";
+  stack1 = ((helper = (helper = helpers.arrayToolbar || (depth0 != null ? depth0.arrayToolbar : depth0)) != null ? helper : helpers.helperMissing),(options={"name":"arrayToolbar","hash":{},"fn":container.program(2, data, 0),"inverse":container.noop,"data":data}),(typeof helper === "function" ? helper.call(alias1,options) : helper));
   if (!helpers.arrayToolbar) { stack1 = helpers.blockHelperMissing.call(depth0,stack1,options)}
   if (stack1 != null) { buffer += stack1; }
-  return buffer + "\n\n"
-    + ((stack1 = helpers.each.call(alias1,(depth0 != null ? depth0.items : depth0),{"name":"each","hash":{},"fn":container.program(3, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + "\n    </div>\n\n</script>\n";
+  return buffer + "\n\n    </div>\n\n</script>\n";
 },"useData":true});
 this["HandlebarsPrecompiled"]["web-edit"]["container-object-item"] = Handlebars.template({"1":function(container,depth0,helpers,partials,data) {
     return "";
@@ -1794,11 +1794,11 @@ this["HandlebarsPrecompiled"]["bootstrap-display"]["control-upload"] = Handlebar
     + alias2(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : alias3),(typeof helper === alias4 ? helper.call(alias1,{"name":"name","hash":{},"data":data}) : helper)))
     + "_files\">\n                            <input class=\"alpaca-fileupload-input-hidden\" type=\"hidden\" name=\""
     + alias2(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : alias3),(typeof helper === alias4 ? helper.call(alias1,{"name":"name","hash":{},"data":data}) : helper)))
-    + "_files_hidden\">\n                        </span>\n                    </div>\n                </div>\n            </div>\n            <div class=\"row alpaca-fileupload-well\">\n                <div class=\"col-md-12 fileupload-active-zone\">\n                    <table class=\"table table-striped\">\n"
+    + "_files_hidden\">\n                        </span>\n                    </div>\n                </div>\n            </div>\n            <div class=\"row alpaca-fileupload-well\">\n                <div class=\"col-md-12 fileupload-active-zone\">\n                    <table class=\"table\">\n"
     + ((stack1 = helpers["if"].call(alias1,((stack1 = (depth0 != null ? depth0.options : depth0)) != null ? stack1.showHeaders : stack1),{"name":"if","hash":{},"fn":container.program(3, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "                        <tbody class=\"files\">\n                        </tbody>\n                    </table>\n                    <p align=\"center\" class=\"dropzone-message\">"
     + alias2(((helper = (helper = helpers.dropZoneMessage || (depth0 != null ? depth0.dropZoneMessage : depth0)) != null ? helper : alias3),(typeof helper === alias4 ? helper.call(alias1,{"name":"dropZoneMessage","hash":{},"data":data}) : helper)))
-    + "</p>\n                </div>\n            </div>\n            <div class=\"row\">\n                <div class=\"col-md-12\">\n                    <div id=\"progress\" class=\"progress\">\n                        <div class=\"progress-bar progress-bar-success\"></div>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>\n\n</script>";
+    + "</p>\n                </div>\n            </div>\n            <div class=\"row\">\n                <div class=\"col-md-12\">\n                    <div id=\"progress\" class=\"progress\">\n                        <div class=\"progress-bar progress-bar-success\"></div>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>\n\n</script>\n";
 },"useData":true});
 this["HandlebarsPrecompiled"]["bootstrap-display"]["control"] = Handlebars.template({"1":function(container,depth0,helpers,partials,data) {
     var stack1, helper, alias1=depth0 != null ? depth0 : {};
@@ -2223,11 +2223,11 @@ this["HandlebarsPrecompiled"]["bootstrap-edit"]["control-upload"] = Handlebars.t
     + alias2(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : alias3),(typeof helper === alias4 ? helper.call(alias1,{"name":"name","hash":{},"data":data}) : helper)))
     + "_files\">\n                            <input class=\"alpaca-fileupload-input-hidden\" type=\"hidden\" name=\""
     + alias2(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : alias3),(typeof helper === alias4 ? helper.call(alias1,{"name":"name","hash":{},"data":data}) : helper)))
-    + "_files_hidden\">\n                        </span>\n                    </div>\n                </div>\n            </div>\n            <div class=\"row alpaca-fileupload-well\">\n                <div class=\"col-md-12 fileupload-active-zone\">\n                    <table class=\"table table-striped\">\n"
+    + "_files_hidden\">\n                        </span>\n                    </div>\n                </div>\n            </div>\n            <div class=\"row alpaca-fileupload-well\">\n                <div class=\"col-md-12 fileupload-active-zone\">\n                    <table class=\"table\">\n"
     + ((stack1 = helpers["if"].call(alias1,((stack1 = (depth0 != null ? depth0.options : depth0)) != null ? stack1.showHeaders : stack1),{"name":"if","hash":{},"fn":container.program(3, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "                        <tbody class=\"files\">\n                        </tbody>\n                    </table>\n                    <p align=\"center\" class=\"dropzone-message\">"
     + alias2(((helper = (helper = helpers.dropZoneMessage || (depth0 != null ? depth0.dropZoneMessage : depth0)) != null ? helper : alias3),(typeof helper === alias4 ? helper.call(alias1,{"name":"dropZoneMessage","hash":{},"data":data}) : helper)))
-    + "</p>\n                </div>\n            </div>\n            <div class=\"row\">\n                <div class=\"col-md-12\">\n                    <div id=\"progress\" class=\"progress\">\n                        <div class=\"progress-bar progress-bar-success\"></div>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>\n\n</script>";
+    + "</p>\n                </div>\n            </div>\n            <div class=\"row\">\n                <div class=\"col-md-12\">\n                    <div id=\"progress\" class=\"progress\">\n                        <div class=\"progress-bar progress-bar-success\"></div>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>\n\n</script>\n";
 },"useData":true});
 this["HandlebarsPrecompiled"]["bootstrap-edit"]["control"] = Handlebars.template({"1":function(container,depth0,helpers,partials,data) {
     var stack1, helper, alias1=depth0 != null ? depth0 : {};
@@ -20782,7 +20782,7 @@ this["HandlebarsPrecompiled"]["bootstrap-edit"]["message"] = Handlebars.template
     Alpaca.registerDefaultSchemaFieldMapping("array", "array");
 
     Alpaca.registerMessages({
-        "addItemButtonLabel": "Add New Item",
+        "addItemButtonLabel": this.schema.items.title || this.schema.items.label || "Add New Item",
         "addButtonLabel": "Add",
         "removeButtonLabel": "Remove",
         "upButtonLabel": "Up",
@@ -32095,7 +32095,7 @@ this["HandlebarsPrecompiled"]["bootstrap-edit"]["message"] = Handlebars.template
     styles["downIcon"] = "glyphicon glyphicon-chevron-down";
     styles["expandedIcon"] = "glyphicon glyphicon-circle-arrow-down";
     styles["collapsedIcon"] = "glyphicon glyphicon-circle-arrow-right";
-    styles["table"] = "table table-striped table-bordered table-hover";
+    styles["table"] = "table";
 
     // custom callbacks
     var callbacks = {};

@@ -546,23 +546,23 @@ this["HandlebarsPrecompiled"]["web-edit"]["container-array-toolbar"] = Handlebar
     + "\n    </div>\n\n</script>";
 },"useData":true,"useDepths":true});
 this["HandlebarsPrecompiled"]["web-edit"]["container-array"] = Handlebars.template({"1":function(container,depth0,helpers,partials,data) {
-    return "";
-},"3":function(container,depth0,helpers,partials,data) {
     var stack1, helper, options, buffer = 
   "\n            ";
-  stack1 = ((helper = (helper = helpers.item || (depth0 != null ? depth0.item : depth0)) != null ? helper : helpers.helperMissing),(options={"name":"item","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data}),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},options) : helper));
+  stack1 = ((helper = (helper = helpers.item || (depth0 != null ? depth0.item : depth0)) != null ? helper : helpers.helperMissing),(options={"name":"item","hash":{},"fn":container.program(2, data, 0),"inverse":container.noop,"data":data}),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},options) : helper));
   if (!helpers.item) { stack1 = helpers.blockHelperMissing.call(depth0,stack1,options)}
   if (stack1 != null) { buffer += stack1; }
   return buffer + "\n\n";
+},"2":function(container,depth0,helpers,partials,data) {
+    return "";
 },"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var stack1, helper, options, alias1=depth0 != null ? depth0 : {}, buffer = 
-  "<script type=\"text/x-handlebars-template\">\n\n    <div>\n\n        ";
-  stack1 = ((helper = (helper = helpers.arrayToolbar || (depth0 != null ? depth0.arrayToolbar : depth0)) != null ? helper : helpers.helperMissing),(options={"name":"arrayToolbar","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data}),(typeof helper === "function" ? helper.call(alias1,options) : helper));
+  "<script type=\"text/x-handlebars-template\">\n\n    <div>\n\n"
+    + ((stack1 = helpers.each.call(alias1,(depth0 != null ? depth0.items : depth0),{"name":"each","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + "\n        ";
+  stack1 = ((helper = (helper = helpers.arrayToolbar || (depth0 != null ? depth0.arrayToolbar : depth0)) != null ? helper : helpers.helperMissing),(options={"name":"arrayToolbar","hash":{},"fn":container.program(2, data, 0),"inverse":container.noop,"data":data}),(typeof helper === "function" ? helper.call(alias1,options) : helper));
   if (!helpers.arrayToolbar) { stack1 = helpers.blockHelperMissing.call(depth0,stack1,options)}
   if (stack1 != null) { buffer += stack1; }
-  return buffer + "\n\n"
-    + ((stack1 = helpers.each.call(alias1,(depth0 != null ? depth0.items : depth0),{"name":"each","hash":{},"fn":container.program(3, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + "\n    </div>\n\n</script>\n";
+  return buffer + "\n\n    </div>\n\n</script>\n";
 },"useData":true});
 this["HandlebarsPrecompiled"]["web-edit"]["container-object-item"] = Handlebars.template({"1":function(container,depth0,helpers,partials,data) {
     return "";
@@ -20531,7 +20531,7 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["message"] = Handlebars.templ
     Alpaca.registerDefaultSchemaFieldMapping("array", "array");
 
     Alpaca.registerMessages({
-        "addItemButtonLabel": "Add New Item",
+        "addItemButtonLabel": this.schema.items.title || this.schema.items.label || "Add New Item",
         "addButtonLabel": "Add",
         "removeButtonLabel": "Remove",
         "upButtonLabel": "Up",
