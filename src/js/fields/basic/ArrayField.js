@@ -1878,7 +1878,7 @@
     Alpaca.registerDefaultSchemaFieldMapping("array", "array");
 
     Alpaca.registerMessages({
-        "addItemButtonLabel": "Add New Item",
+        "addItemButtonLabel": this.schema.items.title || this.schema.items.label || "Add New Item",
         "addButtonLabel": "Add",
         "removeButtonLabel": "Remove",
         "upButtonLabel": "Up",
