@@ -28,7 +28,7 @@
             {{#each arrayToolbarActions}}
 
                 {{#compare ../options.toolbarStyle "link"}}
-                    <a href="#" class="alpaca-array-toolbar-action" data-array-toolbar-action="{{action}}">{{{this.label}}}</a>
+                    <a href="#" class="alpaca-array-toolbar-action" data-array-toolbar-action="{{action}}">{{{label}}}</a>
                 {{/compare}}
 
                 {{#compare ../options.toolbarStyle "button"}}
@@ -36,7 +36,7 @@
                         {{#if iconClass}}
                         <i class="{{iconClass}}"></i>
                         {{/if}}
-                        {{#if this.label}}{{{this.label}}}{{/if}}
+                        {{#if label}}{{{label}}}{{/if}}
                     </button>
                 {{/compare}}
 

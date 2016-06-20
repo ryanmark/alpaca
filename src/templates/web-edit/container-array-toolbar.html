@@ -5,7 +5,7 @@
         {{#each actions}}
 
             {{#compare ../toolbarStyle "link"}}
-                <a href="#" class="alpaca-array-toolbar-action" data-alpaca-array-toolbar-action="{{action}}">{{{this.label}}}</a>
+                <a href="#" class="alpaca-array-toolbar-action" data-alpaca-array-toolbar-action="{{action}}">{{{label}}}</a>
             {{/compare}}
 
             {{#compare ../toolbarStyle "button"}}
@@ -13,7 +13,7 @@
                     {{#if iconClass}}
                     <i class="{{iconClass}}"></i>
                     {{/if}}
-                    {{#if this.label}}{{{this.label}}}{{/if}}
+                    {{#if label}}{{{label}}}{{/if}}
                 </button>
             {{/compare}}
 
