@@ -1728,11 +1728,11 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["container-grid"] = Handlebar
 },"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data,blockParams,depths) {
     var stack1, alias1=depth0 != null ? depth0 : {};
 
-  return "<script type=\"text/x-handlebars-template\">\n\n    <div>\n\n        <div class=\"alpaca-array-toolbar\" "
+  return "<script type=\"text/x-handlebars-template\">\n\n    <div>\n\n        <div class=\"alpaca-container-grid-holder\"></div>\n\n        <div class=\"alpaca-array-toolbar\" "
     + ((stack1 = (helpers.compare || (depth0 && depth0.compare) || helpers.helperMissing).call(alias1,((stack1 = (depth0 != null ? depth0.options : depth0)) != null ? stack1.toolbarStyle : stack1),"button",{"name":"compare","hash":{},"fn":container.program(1, data, 0, blockParams, depths),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + ">\n\n"
     + ((stack1 = helpers.each.call(alias1,(depth0 != null ? depth0.arrayToolbarActions : depth0),{"name":"each","hash":{},"fn":container.program(3, data, 0, blockParams, depths),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + "\n        </div>\n\n        <div class=\"alpaca-container-grid-holder\"></div>\n\n    </div>\n\n</script>\n";
+    + "\n        </div>\n\n    </div>\n\n</script>\n";
 },"useData":true,"useDepths":true});
 this["HandlebarsPrecompiled"]["jquerymobile-edit"]["container-object"] = Handlebars.template({"1":function(container,depth0,helpers,partials,data) {
     var stack1, helper, options, buffer = 
@@ -1751,66 +1751,26 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["container-object"] = Handleb
     + "\n    </div>\n\n</script>";
 },"useData":true});
 this["HandlebarsPrecompiled"]["jquerymobile-edit"]["container-table"] = Handlebars.template({"1":function(container,depth0,helpers,partials,data) {
-    return " btn-group";
-},"3":function(container,depth0,helpers,partials,data,blockParams,depths) {
-    var stack1, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing;
-
-  return "\n"
-    + ((stack1 = (helpers.compare || (depth0 && depth0.compare) || alias2).call(alias1,((stack1 = (depths[1] != null ? depths[1].options : depths[1])) != null ? stack1.toolbarStyle : stack1),"link",{"name":"compare","hash":{},"fn":container.program(4, data, 0, blockParams, depths),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + "\n"
-    + ((stack1 = (helpers.compare || (depth0 && depth0.compare) || alias2).call(alias1,((stack1 = (depths[1] != null ? depths[1].options : depths[1])) != null ? stack1.toolbarStyle : stack1),"button",{"name":"compare","hash":{},"fn":container.program(6, data, 0, blockParams, depths),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + "\n";
-},"4":function(container,depth0,helpers,partials,data) {
-    var stack1, helper, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, alias3="function";
-
-  return "            <a href=\"#\" class=\"alpaca-array-toolbar-action\" data-array-toolbar-action=\""
-    + container.escapeExpression(((helper = (helper = helpers.action || (depth0 != null ? depth0.action : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"action","hash":{},"data":data}) : helper)))
-    + "\">"
-    + ((stack1 = ((helper = (helper = helpers.label || (depth0 != null ? depth0.label : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"label","hash":{},"data":data}) : helper))) != null ? stack1 : "")
-    + "</a>\n";
-},"6":function(container,depth0,helpers,partials,data,blockParams,depths) {
-    var stack1, helper, alias1=container.escapeExpression, alias2=depth0 != null ? depth0 : {};
-
-  return "            <button class=\"alpaca-array-toolbar-action btn "
-    + alias1(container.lambda(((stack1 = ((stack1 = (depths[1] != null ? depths[1].view : depths[1])) != null ? stack1.styles : stack1)) != null ? stack1.button : stack1), depth0))
-    + "\" data-array-toolbar-action=\""
-    + alias1(((helper = (helper = helpers.action || (depth0 != null ? depth0.action : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(alias2,{"name":"action","hash":{},"data":data}) : helper)))
-    + "\">\n"
-    + ((stack1 = helpers["if"].call(alias2,(depth0 != null ? depth0.iconClass : depth0),{"name":"if","hash":{},"fn":container.program(7, data, 0, blockParams, depths),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + "                "
-    + ((stack1 = helpers["if"].call(alias2,(depth0 != null ? depth0.label : depth0),{"name":"if","hash":{},"fn":container.program(9, data, 0, blockParams, depths),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + "\n            </button>\n";
-},"7":function(container,depth0,helpers,partials,data) {
-    var helper;
-
-  return "                <i class=\""
-    + container.escapeExpression(((helper = (helper = helpers.iconClass || (depth0 != null ? depth0.iconClass : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},{"name":"iconClass","hash":{},"data":data}) : helper)))
-    + "\"></i>\n";
-},"9":function(container,depth0,helpers,partials,data) {
-    var stack1, helper;
-
-  return ((stack1 = ((helper = (helper = helpers.label || (depth0 != null ? depth0.label : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},{"name":"label","hash":{},"data":data}) : helper))) != null ? stack1 : "");
-},"11":function(container,depth0,helpers,partials,data) {
     var stack1, helper;
 
   return "                    <th>"
     + ((stack1 = ((helper = (helper = helpers.label || (depth0 != null ? depth0.label : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},{"name":"label","hash":{},"data":data}) : helper))) != null ? stack1 : "")
     + "</th>\n";
-},"13":function(container,depth0,helpers,partials,data,blockParams,depths) {
+},"3":function(container,depth0,helpers,partials,data,blockParams,depths) {
     var stack1, alias1=depth0 != null ? depth0 : {};
 
   return "                <tr>\n"
-    + ((stack1 = helpers.each.call(alias1,(depth0 != null ? depth0.data : depth0),{"name":"each","hash":{},"fn":container.program(14, data, 0, blockParams, depths),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers.each.call(alias1,(depth0 != null ? depth0.data : depth0),{"name":"each","hash":{},"fn":container.program(4, data, 0, blockParams, depths),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "\n                    <!-- actions cell -->\n                    <td>\n                        <div class=\"alpaca-array-item-actions btn-group\">\n"
-    + ((stack1 = helpers.each.call(alias1,(depths[1] != null ? depths[1].arrayItemActions : depths[1]),{"name":"each","hash":{},"fn":container.program(16, data, 0, blockParams, depths),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers.each.call(alias1,(depths[1] != null ? depths[1].arrayItemActions : depths[1]),{"name":"each","hash":{},"fn":container.program(6, data, 0, blockParams, depths),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "                        </div>\n                    </td>\n                </tr>\n";
-},"14":function(container,depth0,helpers,partials,data) {
+},"4":function(container,depth0,helpers,partials,data) {
     var stack1;
 
   return "                    <td>"
     + ((stack1 = container.lambda(depth0, depth0)) != null ? stack1 : "")
     + "</td>\n";
-},"16":function(container,depth0,helpers,partials,data,blockParams,depths) {
+},"6":function(container,depth0,helpers,partials,data,blockParams,depths) {
     var stack1, helper, alias1=container.escapeExpression, alias2=depth0 != null ? depth0 : {};
 
   return "                            <button class=\"alpaca-array-item-action "
@@ -1818,28 +1778,68 @@ this["HandlebarsPrecompiled"]["jquerymobile-edit"]["container-table"] = Handleba
     + "\" data-array-item-action=\""
     + alias1(((helper = (helper = helpers.action || (depth0 != null ? depth0.action : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(alias2,{"name":"action","hash":{},"data":data}) : helper)))
     + "\">\n"
-    + ((stack1 = helpers["if"].call(alias2,(depth0 != null ? depth0.iconClass : depth0),{"name":"if","hash":{},"fn":container.program(17, data, 0, blockParams, depths),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers["if"].call(alias2,(depth0 != null ? depth0.iconClass : depth0),{"name":"if","hash":{},"fn":container.program(7, data, 0, blockParams, depths),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "                                "
     + ((stack1 = helpers["if"].call(alias2,(depth0 != null ? depth0.label : depth0),{"name":"if","hash":{},"fn":container.program(9, data, 0, blockParams, depths),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "\n                            </button>\n";
-},"17":function(container,depth0,helpers,partials,data) {
+},"7":function(container,depth0,helpers,partials,data) {
     var helper;
 
   return "                                <i class=\""
     + container.escapeExpression(((helper = (helper = helpers.iconClass || (depth0 != null ? depth0.iconClass : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},{"name":"iconClass","hash":{},"data":data}) : helper)))
     + "\"></i>\n";
+},"9":function(container,depth0,helpers,partials,data) {
+    var stack1, helper;
+
+  return ((stack1 = ((helper = (helper = helpers.label || (depth0 != null ? depth0.label : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},{"name":"label","hash":{},"data":data}) : helper))) != null ? stack1 : "");
+},"11":function(container,depth0,helpers,partials,data) {
+    return " btn-group";
+},"13":function(container,depth0,helpers,partials,data,blockParams,depths) {
+    var stack1, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing;
+
+  return "\n"
+    + ((stack1 = (helpers.compare || (depth0 && depth0.compare) || alias2).call(alias1,((stack1 = (depths[1] != null ? depths[1].options : depths[1])) != null ? stack1.toolbarStyle : stack1),"link",{"name":"compare","hash":{},"fn":container.program(14, data, 0, blockParams, depths),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + "\n"
+    + ((stack1 = (helpers.compare || (depth0 && depth0.compare) || alias2).call(alias1,((stack1 = (depths[1] != null ? depths[1].options : depths[1])) != null ? stack1.toolbarStyle : stack1),"button",{"name":"compare","hash":{},"fn":container.program(16, data, 0, blockParams, depths),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + "\n";
+},"14":function(container,depth0,helpers,partials,data) {
+    var stack1, helper, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, alias3="function";
+
+  return "            <a href=\"#\" class=\"alpaca-array-toolbar-action\" data-array-toolbar-action=\""
+    + container.escapeExpression(((helper = (helper = helpers.action || (depth0 != null ? depth0.action : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"action","hash":{},"data":data}) : helper)))
+    + "\">"
+    + ((stack1 = ((helper = (helper = helpers.label || (depth0 != null ? depth0.label : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"label","hash":{},"data":data}) : helper))) != null ? stack1 : "")
+    + "</a>\n";
+},"16":function(container,depth0,helpers,partials,data,blockParams,depths) {
+    var stack1, helper, alias1=container.escapeExpression, alias2=depth0 != null ? depth0 : {};
+
+  return "            <button class=\"alpaca-array-toolbar-action btn "
+    + alias1(container.lambda(((stack1 = ((stack1 = (depths[1] != null ? depths[1].view : depths[1])) != null ? stack1.styles : stack1)) != null ? stack1.button : stack1), depth0))
+    + "\" data-array-toolbar-action=\""
+    + alias1(((helper = (helper = helpers.action || (depth0 != null ? depth0.action : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(alias2,{"name":"action","hash":{},"data":data}) : helper)))
+    + "\">\n"
+    + ((stack1 = helpers["if"].call(alias2,(depth0 != null ? depth0.iconClass : depth0),{"name":"if","hash":{},"fn":container.program(17, data, 0, blockParams, depths),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + "                "
+    + ((stack1 = helpers["if"].call(alias2,(depth0 != null ? depth0.label : depth0),{"name":"if","hash":{},"fn":container.program(9, data, 0, blockParams, depths),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + "\n            </button>\n";
+},"17":function(container,depth0,helpers,partials,data) {
+    var helper;
+
+  return "                <i class=\""
+    + container.escapeExpression(((helper = (helper = helpers.iconClass || (depth0 != null ? depth0.iconClass : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},{"name":"iconClass","hash":{},"data":data}) : helper)))
+    + "\"></i>\n";
 },"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data,blockParams,depths) {
     var stack1, alias1=depth0 != null ? depth0 : {};
 
-  return "<script type=\"text/x-handlebars-template\">\n\n    <div>\n\n        <div class=\"alpaca-array-toolbar\" "
-    + ((stack1 = (helpers.compare || (depth0 && depth0.compare) || helpers.helperMissing).call(alias1,((stack1 = (depth0 != null ? depth0.options : depth0)) != null ? stack1.toolbarStyle : stack1),"button",{"name":"compare","hash":{},"fn":container.program(1, data, 0, blockParams, depths),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + ">\n\n"
-    + ((stack1 = helpers.each.call(alias1,(depth0 != null ? depth0.arrayToolbarActions : depth0),{"name":"each","hash":{},"fn":container.program(3, data, 0, blockParams, depths),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + "\n        </div>\n\n        <table>\n\n            <!-- table headers -->\n            <thead>\n                <tr>\n"
-    + ((stack1 = helpers.each.call(alias1,((stack1 = (depth0 != null ? depth0.options : depth0)) != null ? stack1.fields : stack1),{"name":"each","hash":{},"fn":container.program(11, data, 0, blockParams, depths),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+  return "<script type=\"text/x-handlebars-template\">\n\n    <div>\n\n        <table>\n\n            <!-- table headers -->\n            <thead>\n                <tr>\n"
+    + ((stack1 = helpers.each.call(alias1,((stack1 = (depth0 != null ? depth0.options : depth0)) != null ? stack1.fields : stack1),{"name":"each","hash":{},"fn":container.program(1, data, 0, blockParams, depths),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "\n                    <th>Actions</th>\n                </tr>\n            </thead>\n\n            <!-- table body -->\n            <tbody>\n"
-    + ((stack1 = helpers.each.call(alias1,(depth0 != null ? depth0.items : depth0),{"name":"each","hash":{},"fn":container.program(13, data, 0, blockParams, depths),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + "            </tbody>\n\n        </table>\n    </div>\n\n</script>\n";
+    + ((stack1 = helpers.each.call(alias1,(depth0 != null ? depth0.items : depth0),{"name":"each","hash":{},"fn":container.program(3, data, 0, blockParams, depths),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + "            </tbody>\n\n        </table>\n\n        <div class=\"alpaca-array-toolbar\" "
+    + ((stack1 = (helpers.compare || (depth0 && depth0.compare) || helpers.helperMissing).call(alias1,((stack1 = (depth0 != null ? depth0.options : depth0)) != null ? stack1.toolbarStyle : stack1),"button",{"name":"compare","hash":{},"fn":container.program(11, data, 0, blockParams, depths),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + ">\n\n"
+    + ((stack1 = helpers.each.call(alias1,(depth0 != null ? depth0.arrayToolbarActions : depth0),{"name":"each","hash":{},"fn":container.program(13, data, 0, blockParams, depths),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + "\n        </div>\n        \n    </div>\n\n</script>\n";
 },"useData":true,"useDepths":true});
 this["HandlebarsPrecompiled"]["jquerymobile-edit"]["container"] = Handlebars.template({"1":function(container,depth0,helpers,partials,data) {
     var stack1;
