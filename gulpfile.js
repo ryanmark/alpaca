@@ -770,7 +770,7 @@ var generateTable = function(schema)
 {
     var table = "";
 
-    table += "<table class='table table-bordered table-responsive table-hover table-condensed'>";
+    table += "<table class='table table-responsive table-condensed'>";
 
     table += "<thead>";
     table += "<tr>";
@@ -880,7 +880,7 @@ var applyFieldAnnotationsToFile = function(filePath, Alpaca)
                 var gen = "";
                 gen += "<h3>Properties</h3>";
 
-                gen += "<table class='table table-bordered table-responsive table-hover table-condensed'>";
+                gen += "<table class='table table-responsive table-condensed'>";
                 gen += "<tbody>";
                 gen += stampFunction("Title", title);
                 gen += stampFunction("Description", description);

@@ -31,7 +31,7 @@
     styles["downIcon"] = "glyphicon glyphicon-chevron-down";
     styles["expandedIcon"] = "glyphicon glyphicon-circle-arrow-down";
     styles["collapsedIcon"] = "glyphicon glyphicon-circle-arrow-right";
-    styles["table"] = "table table-striped table-bordered table-hover";
+    styles["table"] = "table";
 
     // custom callbacks
     var callbacks = {};

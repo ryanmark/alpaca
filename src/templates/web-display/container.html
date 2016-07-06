@@ -6,6 +6,8 @@
         <legend class="{{#if options.labelClass}}{{options.labelClass}}{{/if}} alpaca-container-label">{{{options.label}}}</legend>
         {{/if}}
 
+        {{#container}}{{/container}}
+
         {{#if options.helpers}}
         {{#each options.helpers}}
         <p class="alpaca-helper {{#if options.helperClass}}{{options.helperClass}}{{/if}}">
@@ -14,8 +16,6 @@
         </p>
         {{/each}}
         {{/if}}
-
-        {{#container}}{{/container}}
 
     </div>
 
