@@ -18,3 +18,5 @@ customers/
 npm/
 
 _old/
+
+.bundle/
